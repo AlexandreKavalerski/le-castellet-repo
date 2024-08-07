@@ -35,6 +35,7 @@ LOGGING_LEVEL = logging.INFO
 LOGGING_FORMAT = "%(asctime)s %(filename)s %(funcName)s %(levelname)s %(lineno)d %(module)s %(message)s %(pathname)s %(process)s"
 
 logging.basicConfig(level=LOGGING_LEVEL, format=LOGGING_FORMAT)
+logger = logging.getLogger("lecastellet")
 
 
 if settings.SPLUNK_IS_ENABLED:
@@ -46,7 +47,6 @@ if settings.SPLUNK_IS_ENABLED:
     splunk_handler.setLevel(LOGGING_LEVEL)
     splunk_handler.setFormatter(CustomJsonFormatter(LOGGING_FORMAT))
 
-    logger = logging.getLogger("uvicorn")
     logger.addHandler(splunk_handler)
 
 
@@ -60,4 +60,4 @@ file_handler = RotatingFileHandler(LOG_FILE_PATH, maxBytes=10485760, backupCount
 file_handler.setLevel(LOGGING_LEVEL)
 file_handler.setFormatter(logging.Formatter(LOGGING_FORMAT))
 
-logging.getLogger("").addHandler(file_handler)
+logger.addHandler(file_handler)

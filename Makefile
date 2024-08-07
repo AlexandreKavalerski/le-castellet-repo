@@ -11,13 +11,15 @@ local:
 	uvicorn src.app.main:app --host 0.0.0.0 --port 8005 --reload
 
 transcriptions:
-	python -m src.app.commands.transcribe_mentorships
+	python -m app.commands.transcribe_mentorships
 summaries:
-	python -m src.app.commands.summarize_mentorships
+	python -m app.commands.summarize_mentorships
 details:
-	python -m src.app.commands.other_info_mentorships
+	python -m app.commands.other_info_mentorships
 
 migration_up:
 	cd src/ && alembic upgrade head
 migration_down:
 	cd src/ && alembic downgrade head-$(rollback)
+exec:
+	docker exec -it lecastelet-api /bin/bash
