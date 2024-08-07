@@ -80,11 +80,11 @@ class MySQLSettings(DatabaseSettings):
         return str(
             URL.build(
                 scheme=self.MYSQL_ASYNC_PREFIX,
-                host=self.MYSQL_SERVER,
-                port=3306,
+                # host=self.MYSQL_SERVER,
+                # port=3310,
                 # TODO: replace with default port and host when running locally
-                # host="localhost",
-                # port=self.MYSQL_PORT,
+                host="localhost",
+                port=self.MYSQL_PORT,
                 user=self.MYSQL_USER,
                 password=self.MYSQL_PASSWORD,
                 path=f"/{self.MYSQL_DB}",

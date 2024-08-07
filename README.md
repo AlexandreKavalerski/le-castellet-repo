@@ -317,7 +317,11 @@ pip install poetry
 If you used docker compose, your setup is done. You just need to ensure that when you run (while in the base folder):
 
 ```sh
-docker compose up
+make up
+```
+
+```sh
+make up-build
 ```
 
 You get the following outputs (in addition to many other outputs):
@@ -335,11 +339,35 @@ So you may skip to [5. Extending](#5-extending).
 ### 4.2 From Scratch
 
 #### 4.2.1. Packages
+I recommend you use pyenv to run this project locally.
+
+To install pyenv ([oficial docs](https://github.com/pyenv/pyenv-installer)):
+
+```sh
+curl https://pyenv.run | bash
+```
+
+Then you may follow [these instructions](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv) to set up pyenv.
+
+After this, install python v3.11.7 and then, create a virtual env.
+
+```sh
+pyenv install 3.11.7
+```
+
+```sh
+pyenv virtualenv 3.11.7 <virtualenv_name>
+```
+
+```sh
+pyenv activate <virtualenv_name>
+```
+
 
 In the `root` directory (`FastAPI-boilerplate` if you didn't change anything), run to install required packages:
 
 ```sh
-poetry install
+make dependencies
 ```
 
 Ensuring it ran without any problem.

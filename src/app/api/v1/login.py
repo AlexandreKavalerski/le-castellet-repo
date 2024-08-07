@@ -9,6 +9,7 @@ from ...core.config import settings
 from ...core.db.database import async_get_db
 from ...core.exceptions.http_exceptions import UnauthorizedException
 from ...core.schemas import Token
+from ...core.logger import logger
 from ...core.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     authenticate_user,
@@ -28,7 +29,9 @@ async def login_for_access_token(
 ) -> dict[str, str]:
     user = await authenticate_user(username_or_email=form_data.username, password=form_data.password, db=db)
     if not user:
-        raise UnauthorizedException("Wrong username, email or password.")
+        error_msg = "Wrong username, email or password."
+        logger.error(f"User not authenticated due to {error_msg}")
+        raise UnauthorizedException(error_msg)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await create_access_token(data={"sub": user["username"]}, expires_delta=access_token_expires)

@@ -21,3 +21,6 @@ migration_up:
 	cd src/ && alembic upgrade head
 migration_down:
 	cd src/ && alembic downgrade head-$(rollback)
+
+dependencies:
+	poetry install && brew install ffmpeg

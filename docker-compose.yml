@@ -1,42 +1,42 @@
 version: '3.8'
 
 services:
-  web:
-    container_name: lecastelet-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-    # -------- replace with comment to run with gunicorn --------
-    command: uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT} --reload
-    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:${APP_PORT}
-    environment:
-      - APP_PORT=${APP_PORT}
-    env_file:
-      - ./.env
-    # -------- replace with comment if you are using nginx --------
-    ports:
-      - "${APP_PORT}:${APP_PORT}"
-    # expose:
-    #   - "8000"
-    depends_on:
-      mysqldb:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - ./src/app:/code/app
-      - ./src/tmp:/code/tmp
-    networks:
-      - lecastelet
-      - splunk-net
-    deploy:
-      resources:
-        limits:
-          cpus: '4.0'
-          memory: 10G
-        reservations:
-          cpus: '2.0'
-          memory: 4G
+  # web:
+  #   container_name: lecastelet-api
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   # -------- replace with comment to run with gunicorn --------
+  #   command: uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT} --reload
+  #   # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:${APP_PORT}
+  #   environment:
+  #     - APP_PORT=${APP_PORT}
+  #   env_file:
+  #     - ./.env
+  #   # -------- replace with comment if you are using nginx --------
+  #   ports:
+  #     - "${APP_PORT}:${APP_PORT}"
+  #   # expose:
+  #   #   - "8000"
+  #   depends_on:
+  #     mysqldb:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./src/app:/code/app
+  #     - ./src/tmp:/code/tmp
+  #   networks:
+  #     - lecastelet
+  #     - splunk-net
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '4.0'
+  #         memory: 10G
+  #       reservations:
+  #         cpus: '2.0'
+  #         memory: 4G
 
   # worker:
   #   container_name: lecastelet-worker

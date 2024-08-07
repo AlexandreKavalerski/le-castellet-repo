@@ -34,8 +34,9 @@ async def get_current_user(
 
     if user:
         return user
-
-    raise UnauthorizedException("User not authenticated.")
+    error_msg = "User not authenticated."
+    logger.error(error_msg)
+    raise UnauthorizedException(error_msg)
 
 
 async def get_optional_user(request: Request, db: AsyncSession = Depends(async_get_db)) -> dict | None:
