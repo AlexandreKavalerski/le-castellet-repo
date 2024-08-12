@@ -21,6 +21,15 @@ class OpenAISettings(MySettings):
     OPENAI_SUMMARY_LAST_TOKENS_SIZE: int = 2500
 
 
+class SentrySettings(MySettings):
+    SENTRY_HOST: str | None
+    SENTRY_SAMPLING_RATE: float = 1.0
+    SENTRY_IS_ENABLED: bool = False
+    SENTRY_ENABLE_DEBUG: bool = False
+    SENTRY_ENV_LABEL: str = "local"
+    SENTRY_SERVICE_NAME: str = "lecastellet"
+
+
 class SplunkSettings(MySettings):
     SPLUNK_URL: str = "http://localhost:8088/services/collector/event"
     SPLUNK_TOKEN: str | None
@@ -162,6 +171,7 @@ class EnvironmentSettings(MySettings):
 class Settings(
     AppSettings,
     OpenAISettings,
+    SentrySettings,
     WhisperSettings,
     SplunkSettings,
     MySQLSettings,

@@ -11,6 +11,7 @@ from ...core.security import blocklist_token, get_password_hash, oauth2_scheme
 from ...crud.crud_users import crud_users
 from ...schemas.user import UserCreate, UserCreateInternal, UserRead, UserUpdate
 from ...core.logger import logger
+from ...core.trace_manager import trace_and_timeit, timing_and_trace_context
 
 router = APIRouter(tags=["users"])
 
@@ -35,20 +36,22 @@ async def write_user(
     created_user: UserRead = await crud_users.create(db=db, object=user_internal)
     return created_user
 
-
+@trace_and_timeit
 @router.get("/users", response_model=PaginatedListResponse[UserRead])
 async def read_users(
     request: Request, db: Annotated[AsyncSession, Depends(async_get_db)], page: int = 1, items_per_page: int = 10
 ) -> dict:
-    users_data = await crud_users.get_multi(
-        db=db,
-        offset=compute_offset(page, items_per_page),
-        limit=items_per_page,
-        schema_to_select=UserRead,
-        is_deleted=False,
-    )
+    with timing_and_trace_context("Getting users data"):
+        users_data = await crud_users.get_multi(
+            db=db,
+            offset=compute_offset(page, items_per_page),
+            limit=items_per_page,
+            schema_to_select=UserRead,
+            is_deleted=False,
+        )
 
-    response: dict[str, Any] = paginated_response(crud_data=users_data, page=page, items_per_page=items_per_page)
+    with timing_and_trace_context("Paginating response"):
+        response: dict[str, Any] = paginated_response(crud_data=users_data, page=page, items_per_page=items_per_page)
     return response
 
 
@@ -132,3 +135,8 @@ async def erase_db_user(
     await crud_users.db_delete(db=db, username=username)
     await blocklist_token(token=token, db=db)
     return {"message": "User deleted from the database"}
+
+
+@router.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0

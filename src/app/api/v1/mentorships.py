@@ -24,6 +24,8 @@ from ...schemas.mentorship import (
     MentorshipUpdateWithRecord,
     MentorshipCreateInternal,
 )
+from ...core.trace_manager import trace_and_timeit, timing_and_trace_context
+
 DIRNAME = os.path.dirname(__file__)
 
 
@@ -56,6 +58,8 @@ async def write_mentorship(
     return created_mentorship
 
 
+
+@trace_and_timeit
 @router.get("/mentorships", response_model=PaginatedListResponse[MentorshipRead])
 async def read_mentorships(
     request: Request,
@@ -134,11 +138,10 @@ async def upload_video(
     logger.info(f"Added mentorship record. file_type={file_extension}; file_size={record_file.size} B")
 
     file_path = os.path.join(DIRNAME, f"../../../tmp/uploads/{file_name}_{datetime.now(timezone.utc).timestamp()}.{file_extension}")
-
-    with open(file_path, "wb") as f:
-        f.write(record_file.file.read())
-
-    values = MentorshipUpdateWithRecord(recording_location=file_path)
-
-    await crud_mentorships.update(db=db, object=values, id=mentorship_id)
+    with timing_and_trace_context("Writing file in directory"):
+        with open(file_path, "wb") as f:
+            f.write(record_file.file.read())
+    with timing_and_trace_context("Updating mentorship record in db"):
+        values = MentorshipUpdateWithRecord(recording_location=file_path)
+        await crud_mentorships.update(db=db, object=values, id=mentorship_id)
     return {"message": "Record file added to the mentorship"}

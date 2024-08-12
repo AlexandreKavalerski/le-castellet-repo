@@ -14,12 +14,14 @@ from ..crud.crud_tier import crud_tiers
 from ..crud.crud_users import crud_users
 from ..models.user import User
 from ..schemas.rate_limit import sanitize_path
+from ..core.trace_manager import trace_and_timeit
 
 
 DEFAULT_LIMIT = settings.DEFAULT_RATE_LIMIT_LIMIT
 DEFAULT_PERIOD = settings.DEFAULT_RATE_LIMIT_PERIOD
 
 
+@trace_and_timeit
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], db: Annotated[AsyncSession, Depends(async_get_db)]
 ) -> dict[str, Any] | None:

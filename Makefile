@@ -4,9 +4,11 @@ down-rm:
 	docker compose down --rmi local
 up:
 	docker compose up -d
-
 up-build:
 	docker compose up -d --build
+logs:
+	docker container logs lecastelet-api -f 
+
 local:
 	uvicorn src.app.main:app --host 0.0.0.0 --port 8005 --reload
 
