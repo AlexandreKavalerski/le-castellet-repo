@@ -115,8 +115,8 @@ async def delete_mentorship(
     return {"message": "Mentorship deleted"}
 
 
-@tracktime
 @router.post("/mentorship/{mentorship_id}/upload_record/")
+@tracktime
 async def upload_video(
     request: Request,
     mentorship_id: int,
